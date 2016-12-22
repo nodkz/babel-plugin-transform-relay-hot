@@ -20,7 +20,7 @@ npm install babel-plugin-transform-relay-hot --save-dev
 {
   "plugins": [
     ["transform-relay-hot", {
-      "schemaJsonFilepath": "./path.to.your/schema.graphql.json",
+      "schemaJsonFilepath": "./build/schema.graphql.json",
       "watchInterval": 2000
     }],
   ]
@@ -53,7 +53,7 @@ import Schema from './schema';
 export default async function generateSchema() {
   const result = await (graphql(Schema, introspectionQuery));
   fs.writeFileSync(
-    path.join(__dirname, './schema.graphql.json'),
+    path.join(__dirname, './build/schema.graphql.json'),
     JSON.stringify(result, null, 2)
   );
 }
@@ -63,7 +63,7 @@ export default async function generateSchema() {
 
 ### [eslint-plugin-graphql](https://github.com/apollostack/eslint-plugin-graphql)
 
-For `eslint` checks of `Relay.QL` tagged templates you may use `eslint-plugin-graphql`. It also track changes of graphql schema json file with following config:
+For `eslint` checks of `Relay.QL` tagged templates you may use `eslint-plugin-graphql`. It also tracks changes of graphql schema json file with following config:
 ```js
 // In a file called .eslintrc.js
 const path = require('path');
@@ -73,7 +73,7 @@ module.exports = {
   rules: {
     "graphql/template-strings": ['error', {
       env: 'relay',
-      schemaJsonFilepath: path.resolve(__dirname, './graphql.schema.json'),
+      schemaJsonFilepath: path.resolve(__dirname, './build/schema.graphql.json'),
     }]
   },
   plugins: [
