@@ -60,16 +60,6 @@ function initBabelRelayPlugin(pluginOptions, babel, ref) {
       }
     };
   }
-
-  var watchInterval = pluginOptions && pluginOptions.watchInterval
-    ? pluginOptions.watchInterval
-    : 2000;
-  if (watchInterval > 0 && schemaJsonFilepath !== '') {
-    function reinitBabelRelayPlugin() {
-      initBabelRelayPlugin(pluginOptions, babel, ref);
-    }
-    watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin);
-  }
 }
 
 
@@ -100,6 +90,16 @@ module.exports = function(babel) {
            );
           }
           initBabelRelayPlugin(pluginOptions, babel, ref); // HACK obtain/update babelRelayPlugin by reference
+
+          var watchInterval = pluginOptions && pluginOptions.watchInterval
+            ? pluginOptions.watchInterval
+            : 2000;
+          if (watchInterval > 0 && pluginOptions.schemaJsonFilepath) {
+            function reinitBabelRelayPlugin() {
+              initBabelRelayPlugin(pluginOptions, babel, ref);
+            }
+            watcherFn(pluginOptions.schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin);
+          }
         }
 
         ref.babelRelayPlugin.visitor.Program(path, state);
