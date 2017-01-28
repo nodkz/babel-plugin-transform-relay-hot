@@ -63,7 +63,7 @@ export default async function generateSchema() {
 
 ### 🔥 [webpack-plugin-graphql-schema-hot](https://github.com/nodkz/webpack-plugin-graphql-schema-hot)
 
-Webpack plugin which track changes in your schema files and generate `json` and `txt` files. `webpack-plugin-graphql-schema-hot` can freeze Webpack, while this plugin catch changes from `json` file. For this you need set `waitOnStart` and `waitOnRebuild` options (in Webpack plugin) equal to `watchInterval` (from this babel plugin):
+Webpack plugin which tracks changes in your GraphQL Schema files and generates schema introspection in `json` and `txt` formats. `webpack-plugin-graphql-schema-hot` can freeze Webpack, while this plugin catch changes from `json` file. For this you need set `waitOnStart` and `waitOnRebuild` options (in Webpack plugin) equal to `watchInterval` (from this babel plugin):
 ```js
 import path from 'path';
 import WebpackPluginGraphqlSchemaHot from 'webpack-plugin-graphql-schema-hot';
