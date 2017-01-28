@@ -1,6 +1,7 @@
 # babel-plugin-transform-relay-hot
 
 [![NPM version](https://img.shields.io/npm/v/babel-plugin-transform-relay-hot.svg)](https://www.npmjs.com/package/babel-plugin-transform-relay-hot)
+[![npm](https://img.shields.io/npm/dt/babel-plugin-transform-relay-hot.svg)](https://www.npmjs.com/package/babel-plugin-transform-relay-hot)
 
 [Babel 6](https://github.com/babel/babel) plugin for transforming `Relay.QL` tagged templates using json file with GraphQL schema. This plugin wraps standard [babelRelayPlugin](https://github.com/facebook/relay/tree/master/scripts/babel-relay-plugin). Each time the schema changes, the wrapper updates instance of `babelRelayPlugin` with new schema without completely restarting dev server.
 
@@ -60,7 +61,7 @@ export default async function generateSchema() {
 
 ## Recommended modules
 
-### [webpack-plugin-graphql-schema-hot](https://github.com/nodkz/webpack-plugin-graphql-schema-hot)
+### 🔥 [webpack-plugin-graphql-schema-hot](https://github.com/nodkz/webpack-plugin-graphql-schema-hot)
 
 Webpack plugin which track changes in your schema files and generate `json` and `txt` files. `webpack-plugin-graphql-schema-hot` can freeze Webpack, while this plugin catch changes from `json` file. For this you need set `waitOnStart` and `waitOnRebuild` options (in Webpack plugin) equal to `watchInterval` (from this babel plugin):
 ```js
@@ -86,7 +87,7 @@ const config = {
 }
 ```
 
-### [eslint-plugin-graphql](https://github.com/apollostack/eslint-plugin-graphql)
+### 🔥 [eslint-plugin-graphql](https://github.com/apollostack/eslint-plugin-graphql)
 
 For `eslint` checks of `Relay.QL` tagged templates you may use `eslint-plugin-graphql`. It also tracks changes of graphql schema json file with following config:
 ```js
@@ -106,6 +107,10 @@ module.exports = {
   ]
 }
 ```
+
+### 🔥 [js-graphql-intellij-plugin](https://github.com/jimkyndemeyer/js-graphql-intellij-plugin)
+
+GraphQL language support for IntelliJ IDEA and WebStorm, including Relay.QL tagged templates in JavaScript and TypeScript.
 
 ## License
 
