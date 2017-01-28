@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-relay-hot",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Wrapper for babel-relay-plugin which track changes in the graphql schema file and hot swap them without restart dev server with babel",
   "main": "index.js",
   "repository": "https://github.com/nodkz/babel-plugin-transform-relay-hot",
@@ -16,5 +16,10 @@
   "license": "MIT",
   "dependencies": {
     "babel-relay-plugin": "^0.7.0 || ^0.8.0 || ^0.9.0 || ^0.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.14.1",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0"
   }
 }

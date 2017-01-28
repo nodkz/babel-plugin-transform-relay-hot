@@ -1,20 +1,17 @@
-'use strict';
-
 /**
  * Returns a new Babel Transformer that uses the supplied schema to transform
  * template strings tagged with `Relay.QL` into an internal representation of
  * GraphQL queries.
  */
 
-var getBabelRelayPlugin = require('babel-relay-plugin');
-var fs = require('fs');
-var path = require('path');
+const getBabelRelayPlugin = require('babel-relay-plugin');
+const fs = require('fs');
 
 
 // file changes watcher
 function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, prevMtime) {
   try {
-    var stats = fs.statSync(schemaJsonFilepath);
+    const stats = fs.statSync(schemaJsonFilepath);
     if (stats) {
       if (!prevMtime) prevMtime = stats.mtime;
       if (stats.mtime.getTime() !== prevMtime.getTime()) {
@@ -23,7 +20,7 @@ function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, pr
       }
     }
     setTimeout(
-      function () {
+      () => {
         watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, prevMtime);
       },
       watchInterval
@@ -31,13 +28,14 @@ function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, pr
   } catch (e) {
     console.warn('[transform-relay-hot] ' + e);
   }
-};
+}
 
 
 // babelRelayPlugin initializer
 function initBabelRelayPlugin(pluginOptions, babel, ref) {
-  var schemaJsonFilepath = pluginOptions.schemaJsonFilepath || '';
-  var schema;
+  const schemaJsonFilepath = pluginOptions.schemaJsonFilepath || '';
+  let schema;
+
   try {
     schema = JSON.parse(fs.readFileSync(schemaJsonFilepath, 'utf8'));
   } catch (e) {
@@ -48,24 +46,24 @@ function initBabelRelayPlugin(pluginOptions, babel, ref) {
 
   if (schema && schema.data) {
     console.log('[transform-relay-hot] GraphQL Schema loaded successfully from \''
-                 + schemaJsonFilepath + '\'')
+                 + schemaJsonFilepath + '\'');
     ref.babelRelayPlugin = getBabelRelayPlugin(schema.data, pluginOptions)(babel);
   } else {
     // empty Plugin
-    console.warn('[transform-relay-hot] Relay.QL will not be transformed, cause `schema.data` is empty.')
+    console.warn('[transform-relay-hot] Relay.QL will not be transformed, cause `schema.data` is empty.');
     ref.babelRelayPlugin = {
       visitor: {
         Program: function () {},
         TaggedTemplateExpression: function () {},
-      }
+      },
     };
   }
 }
 
 
 // babel plugin proxy
-module.exports = function(babel) {
-  var ref;
+module.exports = function (babel) {
+  let ref;
   return {
     visitor: {
       /**
@@ -75,7 +73,7 @@ module.exports = function(babel) {
         // HACK ONLY ONCE obtain plugin configs form .babelrc and init BabelRelayPlugin
         if (!ref) {
           ref = {};
-          var pluginOptions = state.opts || {};
+          const pluginOptions = state.opts || {};
           if (!pluginOptions.schemaJsonFilepath || pluginOptions.schemaJsonFilepath === '') {
             console.warn(
               '[transform-relay-hot] You should provide `schemaJsonFilepath` option in .babelrc:'
@@ -89,15 +87,17 @@ module.exports = function(babel) {
               + '\n   }'
            );
           }
-          initBabelRelayPlugin(pluginOptions, babel, ref); // HACK obtain/update babelRelayPlugin by reference
 
-          var watchInterval = pluginOptions && pluginOptions.watchInterval
+          // HACK obtain/update babelRelayPlugin by reference
+          initBabelRelayPlugin(pluginOptions, babel, ref);
+
+          const watchInterval = pluginOptions && pluginOptions.watchInterval
             ? pluginOptions.watchInterval
             : 2000;
           if (watchInterval > 0 && pluginOptions.schemaJsonFilepath) {
-            function reinitBabelRelayPlugin() {
+            const reinitBabelRelayPlugin = () => {
               initBabelRelayPlugin(pluginOptions, babel, ref);
-            }
+            };
             watcherFn(pluginOptions.schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin);
           }
         }

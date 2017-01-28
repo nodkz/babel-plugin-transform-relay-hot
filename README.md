@@ -38,12 +38,11 @@ npm install babel-plugin-transform-relay-hot --save-dev
   - Default: 2000
   - Time interval in milliseconds to check `mtime` of json file. Internally used `setTimeout().unref()` cause `fs.watch` blocks babel from exit.
   - You may **disable watching** by setting `watchInterval: 0`.
-- **`babelRelayPlugin options`**
-  - Also you may define [additional options](https://facebook.github.io/relay/docs/guides-babel-plugin.html#additional-options) from `babelRelayPlugin`
+- Also you may define [additional options](https://facebook.github.io/relay/docs/guides-babel-plugin.html#additional-options) from **`babelRelayPlugin`**
 
 
 ## How to generate `graphql.schema.json` file
-
+You may use [webpack-plugin-graphql-schema-hot](https://github.com/nodkz/webpack-plugin-graphql-schema-hot) or do it manually:
 ```js
 import fs from 'fs';
 import path from 'path';
@@ -60,6 +59,32 @@ export default async function generateSchema() {
 ```
 
 ## Recommended modules
+
+### [webpack-plugin-graphql-schema-hot](https://github.com/nodkz/webpack-plugin-graphql-schema-hot)
+
+Webpack plugin which track changes in your schema files and generate `json` and `txt` files. `webpack-plugin-graphql-schema-hot` can freeze Webpack, while this plugin catch changes from `json` file. For this you need set `waitOnStart` and `waitOnRebuild` options (in Webpack plugin) equal to `watchInterval` (from this babel plugin):
+```js
+import path from 'path';
+import WebpackPluginGraphqlSchemaHot from 'webpack-plugin-graphql-schema-hot';
+
+const config = {
+  // ...
+  plugins: [
+    new WebpackPluginGraphqlSchemaHot({
+      schemaPath: path.resolve(__dirname, '../schema/index.js'),
+      output: {
+        // json file path should be equal to `schemaJsonFilepath`
+        json: path.resolve(__dirname, '../build/schema.graphql.json'),
+        txt: path.resolve(__dirname, '../build/schema.graphql.txt'),
+      },
+      runOnStart: true,
+      waitOnStart: 2000, // <----- value from `watchInterval`
+      waitOnRebuild: 2000, // <----- value from `watchInterval`
+      verbose: true,
+    }),
+  ]
+}
+```
 
 ### [eslint-plugin-graphql](https://github.com/apollostack/eslint-plugin-graphql)
 
