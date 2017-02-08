@@ -26,13 +26,14 @@ function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, pr
       watchInterval
     ).unref(); // fs.watch blocks babel from exit, so using `setTimeout` with `unref`
   } catch (e) {
-    console.warn('[transform-relay-hot] ' + e);
+    console.error('[transform-relay-hot] ' + e);
   }
 }
 
 
 // babelRelayPlugin initializer
 function initBabelRelayPlugin(pluginOptions, babel, ref) {
+  const verbose = !!pluginOptions.verbose;
   const schemaJsonFilepath = pluginOptions.schemaJsonFilepath || '';
   let schema;
 
@@ -40,17 +41,19 @@ function initBabelRelayPlugin(pluginOptions, babel, ref) {
     schema = JSON.parse(fs.readFileSync(schemaJsonFilepath, 'utf8'));
   } catch (e) {
     schema = null;
-    console.warn('[transform-relay-hot] Cannot load GraphQL Schema from file \''
+    console.error('[transform-relay-hot] Cannot load GraphQL Schema from file \''
                  + schemaJsonFilepath + '\': ' + e);
   }
 
   if (schema && schema.data) {
-    console.log('[transform-relay-hot] GraphQL Schema loaded successfully from \''
-                 + schemaJsonFilepath + '\'');
+    if (verbose) {
+      console.log('[transform-relay-hot] GraphQL Schema loaded successfully from \''
+                   + schemaJsonFilepath + '\'');
+    }
     ref.babelRelayPlugin = getBabelRelayPlugin(schema.data, pluginOptions)(babel);
   } else {
     // empty Plugin
-    console.warn('[transform-relay-hot] Relay.QL will not be transformed, cause `schema.data` is empty.');
+    console.error('[transform-relay-hot] Relay.QL will not be transformed, cause `schema.data` is empty.');
     ref.babelRelayPlugin = {
       visitor: {
         Program: function () {},
@@ -75,7 +78,7 @@ module.exports = function (babel) {
           ref = {};
           const pluginOptions = state.opts || {};
           if (!pluginOptions.schemaJsonFilepath || pluginOptions.schemaJsonFilepath === '') {
-            console.warn(
+            console.error(
               '[transform-relay-hot] You should provide `schemaJsonFilepath` option in .babelrc:'
               + '\n   {'
               + '\n     "plugins": ['

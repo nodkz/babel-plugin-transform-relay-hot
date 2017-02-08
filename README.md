@@ -22,7 +22,8 @@ npm install babel-plugin-transform-relay-hot --save-dev
   "plugins": [
     ["transform-relay-hot", {
       "schemaJsonFilepath": "./build/schema.graphql.json",
-      "watchInterval": 2000
+      "watchInterval": 2000,
+      "verbose": true
     }],
   ]
 }
@@ -39,6 +40,10 @@ npm install babel-plugin-transform-relay-hot --save-dev
   - Default: 2000
   - Time interval in milliseconds to check `mtime` of json file. Internally used `setTimeout().unref()` cause `fs.watch` blocks babel from exit.
   - You may **disable watching** by setting `watchInterval: 0`.
+- **`verbose`**
+  - Type: `Boolean`
+  - Default: false
+  - Log to console when schema reloaded.
 - Also you may define [additional options](https://facebook.github.io/relay/docs/guides-babel-plugin.html#additional-options) from **`babelRelayPlugin`**
 
 
