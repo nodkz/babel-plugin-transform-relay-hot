@@ -1,6 +1,6 @@
 ## master
 
-## 0.0.5 (February 08, 2017)
+## 0.0.6 (February 08, 2017)
 - chore: Add babel-relay-plugin 0.11.0 (@sibelius)
 
 ## 0.0.4 (February 08, 2017)
