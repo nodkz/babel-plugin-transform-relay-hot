@@ -117,6 +117,10 @@ module.exports = {
 
 GraphQL language support for IntelliJ IDEA and WebStorm, including Relay.QL tagged templates in JavaScript and TypeScript.
 
+### 🔥 [webpack-plugin-relay-touch-dependents](https://github.com/jrhicks/webpack-plugin-relay-touch-dependents)
+
+Trigger webpack rebuilds after your GraphQL Schema has been updated and saved to JSON..
+
 ## License
 
 MIT
