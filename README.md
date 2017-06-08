@@ -1,7 +1,7 @@
 # babel-plugin-transform-relay-hot
 
 [![NPM version](https://img.shields.io/npm/v/babel-plugin-transform-relay-hot.svg)](https://www.npmjs.com/package/babel-plugin-transform-relay-hot)
-[![npm](https://img.shields.io/npm/dt/babel-plugin-transform-relay-hot.svg)](https://www.npmjs.com/package/babel-plugin-transform-relay-hot)
+[![npm](https://img.shields.io/npm/dt/babel-plugin-transform-relay-hot.svg)](http://www.npmtrends.com/babel-plugin-transform-relay-hot)
 
 [Babel 6](https://github.com/babel/babel) plugin for transforming `Relay.QL` tagged templates using json file with GraphQL schema. This plugin wraps standard [babelRelayPlugin](https://github.com/facebook/relay/tree/master/scripts/babel-relay-plugin). Each time the schema changes, the wrapper updates instance of `babelRelayPlugin` with new schema without completely restarting dev server.
 
