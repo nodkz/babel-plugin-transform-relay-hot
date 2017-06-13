@@ -4,9 +4,11 @@
  * GraphQL queries.
  */
 
-const getBabelRelayPlugin = require('babel-plugin-relay');
 const fs = require('fs');
 
+const log = (msg) => {
+  console.log('[transform-relay-hot]', msg);
+};
 
 // file changes watcher
 function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, prevMtime) {
@@ -26,7 +28,7 @@ function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, pr
       watchInterval
     ).unref(); // fs.watch blocks babel from exit, so using `setTimeout` with `unref`
   } catch (e) {
-    console.error('[transform-relay-hot] ' + e);
+    log(e);
   }
 }
 
@@ -41,19 +43,18 @@ function initBabelRelayPlugin(pluginOptions, babel, ref) {
     schema = JSON.parse(fs.readFileSync(schemaJsonFilepath, 'utf8'));
   } catch (e) {
     schema = null;
-    console.error('[transform-relay-hot] Cannot load GraphQL Schema from file \''
+    log('Cannot load GraphQL Schema from file \''
                  + schemaJsonFilepath + '\': ' + e);
   }
 
   if (schema && schema.data) {
     if (verbose) {
-      console.log('[transform-relay-hot] GraphQL Schema loaded successfully from \''
-                   + schemaJsonFilepath + '\'');
+      log('GraphQL Schema loaded successfully from \'' + schemaJsonFilepath + '\'');
     }
-    ref.babelRelayPlugin = getBabelRelayPlugin(babel);
+    ref.babelRelayPlugin = require('babel-plugin-relay')(babel);
   } else {
     // empty Plugin
-    console.error('[transform-relay-hot] Relay.QL will not be transformed, cause `schema.data` is empty.');
+    log('Relay.QL will not be transformed, cause `schema.data` is empty.');
     ref.babelRelayPlugin = {
       visitor: {
         TaggedTemplateExpression: function () {},
@@ -78,7 +79,7 @@ module.exports = function (babel) {
           const pluginOptions = state.opts || {};
 
           if (pluginOptions.schemaJsonFilepath) {
-            console.error(
+            log(
               '[transform-relay-hot] Please rename `schemaJsonFilepath` option in .babelrc:'
               + '\n   {'
               + '\n     "plugins": ['
@@ -93,7 +94,7 @@ module.exports = function (babel) {
           }
 
           if (!pluginOptions.schema || pluginOptions.schema === '') {
-            console.error(
+            log(
               '[transform-relay-hot] You should provide `schema` option in .babelrc:'
               + '\n   {'
               + '\n     "plugins": ['
@@ -114,6 +115,18 @@ module.exports = function (babel) {
             : 2000;
           if (watchInterval > 0 && pluginOptions.schema) {
             const reinitBabelRelayPlugin = () => {
+              log('Re-init babel-plugin-relay');
+              // decache all babel-plugin-relay modules
+              Object.keys(require.cache).forEach((key) => {
+                if (key.indexOf('babel-plugin-relay') > 0) {
+                  delete require.cache[key];
+                }
+              });
+              Object.keys(module.constructor._pathCache).forEach((key) => {
+                if (key.indexOf('babel-plugin-relay') > 0) {
+                  delete module.constructor._pathCache[key];
+                }
+              });
               initBabelRelayPlugin(pluginOptions, babel, ref);
             };
             watcherFn(pluginOptions.schema, watchInterval, reinitBabelRelayPlugin);

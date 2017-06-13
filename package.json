@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-relay-hot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wrapper for babel-relay-plugin which track changes in the graphql schema file and hot swap them without restart dev server with babel",
   "main": "index.js",
   "repository": "https://github.com/nodkz/babel-plugin-transform-relay-hot",
