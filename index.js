@@ -34,7 +34,7 @@ function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, pr
 // babelRelayPlugin initializer
 function initBabelRelayPlugin(pluginOptions, babel, ref) {
   const verbose = !!pluginOptions.verbose;
-  const schemaJsonFilepath = pluginOptions.schemaJsonFilepath || '';
+  const schemaJsonFilepath = pluginOptions.schema || '';
   let schema;
 
   try {
@@ -50,13 +50,12 @@ function initBabelRelayPlugin(pluginOptions, babel, ref) {
       console.log('[transform-relay-hot] GraphQL Schema loaded successfully from \''
                    + schemaJsonFilepath + '\'');
     }
-    ref.babelRelayPlugin = getBabelRelayPlugin(schema.data, pluginOptions)(babel);
+    ref.babelRelayPlugin = getBabelRelayPlugin(babel);
   } else {
     // empty Plugin
     console.error('[transform-relay-hot] Relay.QL will not be transformed, cause `schema.data` is empty.');
     ref.babelRelayPlugin = {
       visitor: {
-        Program: function () {},
         TaggedTemplateExpression: function () {},
       },
     };
@@ -77,13 +76,29 @@ module.exports = function (babel) {
         if (!ref) {
           ref = {};
           const pluginOptions = state.opts || {};
-          if (!pluginOptions.schemaJsonFilepath || pluginOptions.schemaJsonFilepath === '') {
+
+          if (pluginOptions.schemaJsonFilepath) {
             console.error(
-              '[transform-relay-hot] You should provide `schemaJsonFilepath` option in .babelrc:'
+              '[transform-relay-hot] Please rename `schemaJsonFilepath` option in .babelrc:'
               + '\n   {'
               + '\n     "plugins": ['
               + '\n       ["transform-relay-hot", {'
-              + '\n         "schemaJsonFilepath": "./pathToSchema.json",'
+              + '\n 🛑 from:  "schemaJsonFilepath": "./pathToSchema.json",'
+              + '\n 👌   to:  "schema": "./pathToSchema.json",'
+              + '\n       }]'
+              + '\n     ]'
+              + '\n   }'
+            );
+            pluginOptions.schema = pluginOptions.schemaJsonFilepath;
+          }
+
+          if (!pluginOptions.schema || pluginOptions.schema === '') {
+            console.error(
+              '[transform-relay-hot] You should provide `schema` option in .babelrc:'
+              + '\n   {'
+              + '\n     "plugins": ['
+              + '\n       ["transform-relay-hot", {'
+              + '\n         "schema": "./pathToSchema.json",'
               + '\n         "watchInterval": 2000'
               + '\n       }]'
               + '\n     ]'
@@ -97,15 +112,13 @@ module.exports = function (babel) {
           const watchInterval = pluginOptions && pluginOptions.watchInterval
             ? pluginOptions.watchInterval
             : 2000;
-          if (watchInterval > 0 && pluginOptions.schemaJsonFilepath) {
+          if (watchInterval > 0 && pluginOptions.schema) {
             const reinitBabelRelayPlugin = () => {
               initBabelRelayPlugin(pluginOptions, babel, ref);
             };
-            watcherFn(pluginOptions.schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin);
+            watcherFn(pluginOptions.schema, watchInterval, reinitBabelRelayPlugin);
           }
         }
-
-        ref.babelRelayPlugin.visitor.Program(path, state);
       },
 
       /**

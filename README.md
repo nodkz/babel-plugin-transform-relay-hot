@@ -3,7 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/babel-plugin-transform-relay-hot.svg)](https://www.npmjs.com/package/babel-plugin-transform-relay-hot)
 [![npm](https://img.shields.io/npm/dt/babel-plugin-transform-relay-hot.svg)](http://www.npmtrends.com/babel-plugin-transform-relay-hot)
 
-[Babel 6](https://github.com/babel/babel) plugin for transforming `Relay.QL` tagged templates using json file with GraphQL schema. This plugin wraps standard [babelRelayPlugin](https://github.com/facebook/relay/tree/master/scripts/babel-relay-plugin). Each time the schema changes, the wrapper updates instance of `babelRelayPlugin` with new schema without completely restarting dev server.
+[Babel 6](https://github.com/babel/babel) plugin for transforming `graphql` literals  and `Relay.QL` tagged templates (when `"compat": true`). It uses json file with GraphQL schema. This plugin wraps  [babel-plugin-relay](https://facebook.github.io/relay/docs/babel-plugin-relay.html). Each time the schema file changes, the wrapper updates instance of `babel-plugin-relay` with new schema without completely restarting dev server.
 
 ## Install
 
@@ -21,7 +21,7 @@ npm install babel-plugin-transform-relay-hot --save-dev
 {
   "plugins": [
     ["transform-relay-hot", {
-      "schemaJsonFilepath": "./build/schema.graphql.json",
+      "schema": "./build/schema.graphql.json",
       "watchInterval": 2000,
       "verbose": true
     }],
@@ -31,7 +31,7 @@ npm install babel-plugin-transform-relay-hot --save-dev
 
 ## Options
 
-- **`schemaJsonFilepath`**
+- **`schema`**
   - **Required**
   - Type: `String`
   - Path to graphql schema json file
@@ -44,7 +44,9 @@ npm install babel-plugin-transform-relay-hot --save-dev
   - Type: `Boolean`
   - Default: false
   - Log to console when schema reloaded.
-- Also you may define [additional options](https://facebook.github.io/relay/docs/guides-babel-plugin.html#additional-options) from **`babelRelayPlugin`**
+- Also you may define [additional options](https://facebook.github.io/relay/docs/babel-plugin-relay.html) from **`babel-plugin-relay`**
+
+Use `"compat": true` option for Relay Classic.
 
 
 ## How to generate `graphql.schema.json` file
