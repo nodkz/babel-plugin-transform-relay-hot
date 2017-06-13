@@ -4,7 +4,7 @@
  * GraphQL queries.
  */
 
-const getBabelRelayPlugin = require('babel-relay-plugin');
+const getBabelRelayPlugin = require('babel-plugin-relay');
 const fs = require('fs');
 
 
@@ -88,7 +88,7 @@ module.exports = function (babel) {
               + '\n       }]'
               + '\n     ]'
               + '\n   }'
-           );
+            );
           }
 
           // HACK obtain/update babelRelayPlugin by reference
