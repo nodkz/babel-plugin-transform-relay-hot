@@ -11,9 +11,9 @@ const log = (msg) => {
 };
 
 // file changes watcher
-function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, prevMtime) {
+function watcherFn(schemaFilepath, watchInterval, reinitBabelRelayPlugin, prevMtime) {
   try {
-    const stats = fs.statSync(schemaJsonFilepath);
+    const stats = fs.statSync(schemaFilepath);
     if (stats) {
       if (!prevMtime) prevMtime = stats.mtime;
       if (stats.mtime.getTime() !== prevMtime.getTime()) {
@@ -23,7 +23,7 @@ function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, pr
     }
     setTimeout(
       () => {
-        watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, prevMtime);
+        watcherFn(schemaFilepath, watchInterval, reinitBabelRelayPlugin, prevMtime);
       },
       watchInterval
     ).unref(); // fs.watch blocks babel from exit, so using `setTimeout` with `unref`
@@ -36,20 +36,20 @@ function watcherFn(schemaJsonFilepath, watchInterval, reinitBabelRelayPlugin, pr
 // babelRelayPlugin initializer
 function initBabelRelayPlugin(pluginOptions, babel, ref) {
   const verbose = !!pluginOptions.verbose;
-  const schemaJsonFilepath = pluginOptions.schema || '';
+  const schemaFilepath = pluginOptions.schema || '';
   let schema;
 
   try {
-    schema = JSON.parse(fs.readFileSync(schemaJsonFilepath, 'utf8'));
+    schema = fs.readFileSync(schemaFilepath, 'utf8');
   } catch (e) {
     schema = null;
     log('Cannot load GraphQL Schema from file \''
-                 + schemaJsonFilepath + '\': ' + e);
+                 + schemaFilepath + '\': ' + e);
   }
 
-  if (schema && schema.data) {
+  if (schema) {
     if (verbose) {
-      log('GraphQL Schema loaded successfully from \'' + schemaJsonFilepath + '\'');
+      log('GraphQL Schema loaded successfully from \'' + schemaFilepath + '\'');
     }
     ref.babelRelayPlugin = require('babel-plugin-relay')(babel);
   } else {

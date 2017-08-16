@@ -3,7 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/babel-plugin-transform-relay-hot.svg)](https://www.npmjs.com/package/babel-plugin-transform-relay-hot)
 [![npm](https://img.shields.io/npm/dt/babel-plugin-transform-relay-hot.svg)](http://www.npmtrends.com/babel-plugin-transform-relay-hot)
 
-[Babel 6](https://github.com/babel/babel) plugin for transforming `graphql` literals  and `Relay.QL` tagged templates (when `"compat": true`). It uses json file with GraphQL schema. This plugin wraps  [babel-plugin-relay](https://facebook.github.io/relay/docs/babel-plugin-relay.html). Each time the schema file changes, the wrapper updates instance of `babel-plugin-relay` with new schema without completely restarting dev server.
+[Babel 6](https://github.com/babel/babel) plugin for transforming `graphql` literals  and `Relay.QL` tagged templates (when `"compat": true`). It uses json/graphql file with GraphQL schema. This plugin wraps  [babel-plugin-relay](https://facebook.github.io/relay/docs/babel-plugin-relay.html). Each time the schema file changes, the wrapper updates instance of `babel-plugin-relay` with new schema without completely restarting dev server.
 
 ## Install
 
@@ -21,7 +21,7 @@ npm install babel-plugin-transform-relay-hot --save-dev
 {
   "plugins": [
     ["transform-relay-hot", {
-      "schema": "./build/schema.graphql.json",
+      "schema": "./build/schema.graphql",
       "watchInterval": 2000,
       "verbose": true
     }],
@@ -34,7 +34,7 @@ npm install babel-plugin-transform-relay-hot --save-dev
 - **`schema`**
   - **Required**
   - Type: `String`
-  - Path to graphql schema json file
+  - Path to graphql schema json/graphql file
 - **`watchInterval`**
   - Type: `Number`
   - Default: 2000
@@ -49,15 +49,29 @@ npm install babel-plugin-transform-relay-hot --save-dev
 Use `"compat": true` option for Relay Classic.
 
 
-## How to generate `graphql.schema.json` file
+## How to generate `schema.graphql` or `schema.graphql.json` files
 You may use [webpack-plugin-graphql-schema-hot](https://github.com/nodkz/webpack-plugin-graphql-schema-hot) or do it manually:
+```js
+import fs from 'fs';
+import path from 'path';
+import { printSchema } from 'graphql';
+import Schema from './schema';
+
+export default function generateSchema() {
+  fs.writeFileSync(
+    path.join(__dirname, './build/schema.graphql'),
+    printSchema(schema)
+  );
+}
+```
+
 ```js
 import fs from 'fs';
 import path from 'path';
 import { graphql, introspectionQuery } from 'graphql';
 import Schema from './schema';
 
-export default async function generateSchema() {
+export default async function generateSchemaJson() {
   const result = await (graphql(Schema, introspectionQuery));
   fs.writeFileSync(
     path.join(__dirname, './build/schema.graphql.json'),
@@ -81,9 +95,8 @@ const config = {
     new WebpackPluginGraphqlSchemaHot({
       schemaPath: path.resolve(__dirname, '../schema/index.js'),
       output: {
-        // json file path should be equal to `schemaJsonFilepath`
         json: path.resolve(__dirname, '../build/schema.graphql.json'),
-        txt: path.resolve(__dirname, '../build/schema.graphql.txt'),
+        txt: path.resolve(__dirname, '../build/schema.graphql'),
       },
       runOnStart: true,
       waitOnStart: 2000, // <----- value from `watchInterval`
