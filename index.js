@@ -13,7 +13,12 @@ const log = (msg) => {
 // file changes watcher
 function watcherFn(schemaFilepath, watchInterval, reinitBabelRelayPlugin, prevMtime) {
   try {
-    const stats = fs.statSync(schemaFilepath);
+    let stats;
+    try {
+      stats = fs.statSync(schemaFilepath);
+    } catch (e) {
+      // no problem
+    }
     if (stats) {
       if (!prevMtime) prevMtime = stats.mtime;
       if (stats.mtime.getTime() !== prevMtime.getTime()) {
