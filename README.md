@@ -3,7 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/babel-plugin-transform-relay-hot.svg)](https://www.npmjs.com/package/babel-plugin-transform-relay-hot)
 [![npm](https://img.shields.io/npm/dt/babel-plugin-transform-relay-hot.svg)](http://www.npmtrends.com/babel-plugin-transform-relay-hot)
 
-[Babel 6](https://github.com/babel/babel) plugin for transforming `graphql` literals  and `Relay.QL` tagged templates (when `"compat": true`). It uses json/graphql file with GraphQL schema. This plugin wraps  [babel-plugin-relay](https://facebook.github.io/relay/docs/babel-plugin-relay.html). Each time the schema file changes, the wrapper updates instance of `babel-plugin-relay` with new schema without completely restarting dev server.
+[Babel](https://github.com/babel/babel) plugin for transforming `graphql` literals  and `Relay.QL` tagged templates (when `"compat": true`). It uses json/graphql file with GraphQL schema. This plugin wraps  [babel-plugin-relay](https://facebook.github.io/relay/docs/babel-plugin-relay.html). Each time the schema file changes, the wrapper updates instance of `babel-plugin-relay` with new schema without completely restarting dev server.
 
 ## Install
 
